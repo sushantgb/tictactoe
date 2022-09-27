@@ -1,115 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiktak</title>
+    <title>Tiktactoe</title>
+    <!-- basic styling -->
     <style>
-        *{
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        .container{
+        body{
+            background-color: black;
+            color: black;
+        }
+
+        .gameBox{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1em;
+            padding: 1em;
+            width: 90%;
+            margin: auto;
+        }
+        .gameBox .head{
+            padding: 1em;
+            background-color: rgb(48, 241, 193);
+            border-radius: 0.2em;
+
+        }
+        .container {
             display: flex;
             justify-content: center;
             align-content: center;
             flex-direction: column;
-            gap: 0.1em;
-            width: 50%;
+            gap: 0.5em;
             margin: auto;
-            margin-top: 5em;
+            margin-top: 1em;
+            padding: 1em;
         }
-        button{
+
+        .container div {
+            margin: auto;
+            display: flex;
+            gap: 0.5em;
+        }
+
+        button {
             width: 5em;
             height: 5em;
-            background-color: rgb(226, 36, 68);
+            background-color: rgb(48, 241, 193);
             border-style: none;
-            color: white;
             cursor: pointer;
+            font-size: 1em;
+            font-weight: bolder;
+            border-radius: 0.2em;
+        }
+
+        button:disabled {
+            opacity: 0.9;
+        }
+        .description{
+            display: flex;
+            flex-direction: column;
+            gap: 0.2em;
+            justify-content: center;
+            align-content: center;
+            margin: auto;
+            text-align: center;
+            background-color: rgb(48, 241, 193);
+            padding: 1em;
+            border-radius: 0.2em;
+            width: 50%;
+        }
+        .result{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+            margin: auto;
+            padding: 1em;
+            background-color: rgb(48, 241, 193);
+            margin-top: 1em ;
+            border-radius: 0.2em;
+            height: 5em;
+            text-align: center;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div>
-            <button class="btn" id="1"></button>
-            <button class="btn" id="2"></button>
-            <button class="btn" id="3"></button>
+    <!-- game html -->
+    <div class="gameBox">
+        <h3 class="head">Tik Tac Toe</h3>
+        <div class="container">
+            <div>
+                <button class="btn" id="1"></button>
+                <button class="btn" id="2"></button>
+                <button class="btn" id="3"></button>
+            </div>
+            <div>
+                <button class="btn" id="4"></button>
+                <button class="btn" id="5"></button>
+                <button class="btn" id="6"></button>
+            </div>
+            <div>
+                <button class="btn" id="7"></button>
+                <button class="btn" id="8"></button>
+                <button class="btn" id="9"></button>
+            </div>
         </div>
-        <div>
-            <button class="btn" id="4"></button>
-            <button class="btn" id="5"></button>
-            <button class="btn" id="6"></button>
+        <div class="description">
+            <span><em>Play this game with your friend.</em></span>
+            <span><em>Player 1 plays first.</em></span>
+            <h3>Player 1: X</h2>
+            <h3>Player 2: O</h2>
         </div>
-        <div>
-            <button class="btn" id="7"></button>
-            <button class="btn" id="8"></button>
-            <button class="btn" id="9"></button>
+        <div class="result">
+            <h3></h3>
         </div>
     </div>
-    <!-- <div class="players">
-        <select name="playerVal" id="playerVal">
-            <option value="x">player1</option>
-            <option value="o">player2</option>
-        </select>
-    </div> -->
+    <!-- script for game -->
     <script>
+        //flag to switch chances of player;
         let flag = true;
+        //counter for button clicking
+        let count = 0;
+        //array template to push values in it on button click & check pattern
         let array = [
             [0, 0, 0],
             [0, 0, 0],
             [0, 0, 0]
         ];
-        let arrayY = [];
-        let winComb = [[1,2,3], [1,4,7], [4,5,6], [7,8,9],[2,5,8],[3,6,9],[1,5,9],[3,5,7]];
+        //to access buttons
         let boxArr = document.querySelectorAll('.btn');
-        const row  = () =>{
-            for(let i=0;i<array.length; i++){
-                let flag2 = 0;
-                array[i].forEach(element =>{
-                    if(array[i].indexOf(element)== -1){
-                        return flag2 = 1;
+        let resultDisplay = document.querySelector('.result h3');
+        const row = () => {
+            count++;
+            for (let i = 0; i < array.length; i++) {
+                // console.log(array[i]);
+                for (let j = 0; j < array.length; j++) {
+                    console.log("i: " + i + " " + "j: " + j);
+
+                    if (count == 9) {
+                        //to check for the last X input in case game reaches to last tile
+                        if ((array[i][0] == 1 && array[i][1] == 1 && array[i][2] == 1) || (array[0][j] == 1 && array[1][j] == 1 && array[2][j] == 1) || (array[0][0] == 1 && array[1][1] == 1 && array[2][2] == 1) || (array[0][2] == 1 && array[1][1] == 1 && array[2][0] == 1)) {
+                            //console.log("X wins");
+                            resultDisplay.innerHTML = `Player 1 Won &#127942;`;
+                            boxArr.forEach(e => {
+                                e.disabled = true;
+                            })
+                            break;
+                        }else{
+                            //console.log("Inside else");
+                            resultDisplay.innerHTML = `Match Draw &#129309;`;
+                        }
                     }
-                })
-                console.log("winner");
+
+                    if ((array[i][0] == 1 && array[i][1] == 1 && array[i][2] == 1) || (array[0][j] == 1 && array[1][j] == 1 && array[2][j] == 1) || (array[0][0] == 1 && array[1][1] == 1 && array[2][2] == 1) || (array[0][2] == 1 && array[1][1] == 1 && array[2][0] == 1)) {
+                        //console.log("X wins");
+                        resultDisplay.innerHTML = `Player 1 Won &#127942;`;
+                        boxArr.forEach(e => {
+                            e.disabled = true;
+                        })
+                    }
+                    //to check for O
+                    else if ((array[i][0] == 2 && array[i][1] == 2 && array[i][2] == 2) || (array[0][j] == 2 && array[1][j] == 2 && array[2][j] == 2) || (array[0][0] == 2 && array[1][1] == 2 && array[2][2] == 2) || (array[0][2] == 2 && array[1][1] == 2 && array[2][0] == 2)) {
+                        //console.log("O wins");
+                        resultDisplay.innerHTML = `Player 2 Won &#127942;`;
+                        boxArr.forEach(e => {
+                            e.disabled = true;
+                        })
+                    }
+                }
+
             }
-        } 
-        
+        }
+
+        //event on buttons
         boxArr.forEach(element => {
-            element.addEventListener('click', (e)=>{
-                if(flag){
-                    let q = parseInt(e.target.id/3);
-                    let r = parseInt(e.target.id%3);
-                    console.log("q" + q);
-                    console.log("r" + r);
-                    if(r == 0 || q==3){
+            element.addEventListener('click', (e) => {
+                console.log("counter: " + count);
+                if (flag) {
+                    //formula to target the correct cell of matrix
+                    let q = parseInt(e.target.id / 3);
+                    let r = parseInt(e.target.id % 3);
+                    //for debugging purposes
+                    console.log("q: " + q);
+                    console.log("r: " + r);
+                    //if values go out of scope of matrix
+                    if (r == 0 || q == 3) {
                         q -= 1;
                         r = 3;
                     }
-                    array[q][r-1] = 1;
+                    //assigning value 1 for player X
+                    array[q][r - 1] = 1;
                     console.log(array);
+                    //assigning value x if flag is true
                     e.target.textContent = "X";
-                    flag = false;
-                }else{
-                    let q = parseInt(e.target.id/3);
-                    let r = parseInt(e.target.id%3);
-                    console.log("q" + q);
-                    console.log("r" + r);
-                    if(r == 0 || q==3){
+                    //disabling the target button on each click to avoid reclick
+                    e.target.disabled = true;
+                    flag = false; //changing value of flag
+                } else {
+                    let q = parseInt(e.target.id / 3);
+                    let r = parseInt(e.target.id % 3);
+                    //for debugging purposes
+                    console.log("q: " + q);
+                    console.log("r: " + r);
+                    if (r == 0 || q == 3) {
                         q -= 1;
                         r = 3;
                     }
-                    array[q][r-1] = 2;
+                    //assigning value 2 for player O
+                    array[q][r - 1] = 2;
                     console.log(array);
-                    e.target.textContent = "O";  
+                    //assigning value O for switched turn
+                    e.target.textContent = "O";
+                    e.target.disabled = true;
                     flag = true;
                 }
                 row();
             })
         });
-        
+
     </script>
 </body>
+
 </html>
